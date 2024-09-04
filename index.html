@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FreakFinance Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/scrollreveal"></script>
     <style>
         body {
             margin: 0;
@@ -162,6 +163,14 @@
         </div>
     </div>
 </div>
+
+<script>
+    ScrollReveal().reveal('.sidebar', { origin: 'left', distance: '50px', duration: 1000 });
+    ScrollReveal().reveal('.header', { origin: 'top', distance: '50px', duration: 1000 });
+    ScrollReveal().reveal('.card', { origin: 'bottom', distance: '50px', duration: 1000, interval: 200 });
+    ScrollReveal().reveal('.bills-list', { origin: 'left', distance: '50px', duration: 1000 });
+    ScrollReveal().reveal('.recent-transactions', { origin: 'right', distance: '50px', duration: 1000 });
+</script>
 
 </body>
 </html>
