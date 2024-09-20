@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const examSchema = new mongoose.Schema({
+const billingSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -14,10 +14,14 @@ const examSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  date: {
-    type: Date,
+  hoursWorked: {
+    type: Number,
+    required: true
+  },
+  amount: {
+    type: Number,
     required: true
   }
 });
 
-module.exports = mongoose.model('Exam', examSchema);
+module.exports = mongoose.model('Billing', billingSchema);
