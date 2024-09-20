@@ -1,0 +1,39 @@
+{
+  "name": "evaluator-billing-system",
+  "version": "1.0.0",
+  "description": "Frontend for Evaluator Billing System",
+  "main": "index.js",
+  "scripts": {
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "core-js": "^3.38.1",
+    "cors": "^2.8.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^5.0.1",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.25.1",
+    "@babel/plugin-transform-private-property-in-object": "^7.24.7",
+    "dotenv": "^10.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
