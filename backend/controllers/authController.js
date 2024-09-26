@@ -2,11 +2,17 @@ const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+
+
 // Register User
 exports.register = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
+    // Check if all fields are present
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
@@ -20,6 +26,7 @@ exports.register = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
+  
 };
 
 // Login User
@@ -27,6 +34,10 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    // Check if all fields are present
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "User not found" });
