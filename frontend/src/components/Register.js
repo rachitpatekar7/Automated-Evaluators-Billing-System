@@ -6,20 +6,28 @@ const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Basic form validation
+    if (!name || !email || !password) {
+      alert('All fields are required');
+      return;
+    }
+
     try {
-      await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
-      history.push('/');
-      console.error("Registered");
+      // Sending the form data to the backend
+      const response = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+      history.push('/');  // Redirect after successful registration
     } catch (error) {
-      console.error("Registration failed");
+      setErrorMessage(error.response ? error.response.data.message : 'Registration failed');
+      console.error('Registration failed:', error);
     }
   };
 
-  
   return (
     <div className="login-container">
       <h2>Register</h2>
@@ -42,9 +50,7 @@ const Register = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <div className="button-group">
-          <button type="submit" className="login-btn">Register</button>
-        </div>
+        <button type="submit">Register</button>
       </form>
     </div>
   );
