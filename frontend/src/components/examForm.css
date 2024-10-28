@@ -1,0 +1,64 @@
+html, body {
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0; /* Ensure no default margin */
+}
+
+.exam-form-container, .billing-container {
+    width: 100%;
+    max-width: 500px; /* Adjust max-width for container */
+    padding: 40px; /* Padding for a spacious look */
+    background-color: #0a3732; /* Dark green */
+    color:  #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    opacity: 0; /* Start invisible for fade effect */
+    transform: translateY(20px); /* Start below */
+    transition: opacity 0.8s ease, transform 0.8s ease; /* Transition for fade effect */
+}
+
+.fade-in {
+    opacity: 1; /* Fully visible */
+    transform: translateY(0); /* Move to original position */
+}
+
+h1 {
+    font-size: 2.5rem; /* Increased font size */
+    margin: 0;
+    font-weight: bold; /* Make title bold */
+}
+
+label {
+    margin: 10px 0; /* Space between labels */
+    font-size: 1rem;
+}
+
+select, input {
+    width: 90%; /* Adjust width to fit inside the container */
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box; /* Prevents overflow */
+}
+
+.create-exam-btn {
+    background-color: white;
+    color: #0a3732;
+    padding: 12px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.create-exam-btn:hover {
+    background-color: #90ee90; /* Light green on hover */
+}

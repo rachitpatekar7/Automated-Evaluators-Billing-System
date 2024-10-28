@@ -1,0 +1,231 @@
+.dashboard-container {
+  
+ 
+  min-height: 100vh; /* Ensures the container takes at least the full viewport height */
+
+}
+
+.sidebar {
+  width: 250; /* Adjust width as necessary */
+  background-color: #ff0000; /* Sidebar background color */
+  padding: 20px;
+  position: static;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.profile-section {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.profile-icon {
+  font-size: 2rem;
+  margin-right: 10px;
+}
+
+.toolbar-items {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar-items button {
+  margin-bottom: 10px;
+  padding: 0;
+  width: 100%;
+  height: 40px;
+  font-size: 0.9rem;
+  font-family: 'Montserrat', sans-serif;
+  text-align: center;
+  color: white;
+  background-color: #0a3732;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Added color transition */
+}
+
+.toolbar-items button:hover {
+  background-color: #90ee90; /* Light green on hover */
+  color: black; /* Change text color to black on hover */
+}
+
+/* Ensure links inside buttons inherit color */
+.toolbar-items button a {
+  color: inherit;
+  text-decoration: none;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  line-height: 40px;
+}
+
+
+.main-content {
+  margin-left: 100px; /* Leave space for sidebar */
+  padding: 20px;
+  width: calc(100% - 270px); /* Adjust width based on sidebar */
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.section-container {
+  margin-top: 20px;
+}
+
+
+.toolbar {
+  background-color: #000000;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.main-content {
+  flex-grow: 1; /* Allows this section to grow and fill space */
+  padding: 20px; /* Padding around content */
+}
+
+.cards {
+  display: flex;
+  justify-content: space-between; /* Space out cards evenly */
+  margin-bottom: 20px; /* Space below the cards */
+}
+
+.card {
+  flex: 1; /* Allow cards to grow equally */
+  margin-right: 10px; /* Space between cards */
+  padding: 10px; /* Padding inside cards */
+  background-color:  #ebebeb; /* Card background */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+}
+
+.card:last-child {
+  margin-right: 0; /* Remove margin from last card */
+}
+
+.cards,
+.section-container {
+  opacity: 0; /* Initially hidden */
+  transform: translateY(20px); /* Move down */
+  transition: opacity 0.5s ease, transform 0.5s ease; /* Smooth transition */
+}
+
+.cards.fade-in,
+.section-container.fade-in {
+  opacity: 1; /* Show when visible */
+  transform: translateY(0); /* Move back to original position */
+}
+
+
+.section {
+  padding: 20px; /* Padding inside the sections */
+  background-color:  #0a3732; /* Background color for sections */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Additional Responsive Design */
+@media (max-width: 768px) {
+  .cards {
+    flex-direction: column; /* Stack cards vertically on smaller screens */
+  }
+
+  .card {
+    margin-right: 0; /* No margin on smaller screens */
+    margin-bottom: 10px; /* Space between cards */
+  }
+}
+
+
+.card:hover {
+  transform: scale(1.05); /* Scale effect on hover */
+}
+
+
+.primary-button {
+  background-color: white;
+  color:#0a3732;
+  padding: 12px 20px; /* Button padding */
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.primary-button:hover {
+  background-color: #90ee90; /* Light green on hover */
+  color:black;
+  
+}
+
+.profile-icon {
+  font-size: 40px; /* Adjust the icon size */
+  color: white; /* Change color as needed */
+  margin-left: 10px; /* Space between text and icon */
+}
+
+h4 {
+color: #0a3732;
+}
+
+
+/* Sidebar styling with Montserrat font */
+.sidebar {
+width: 250px; /* Adjust the width as needed */
+background-color: #f8f8f8;
+padding: 20px;
+font-family: 'Montserrat', sans-serif; /* Apply Montserrat font to sidebar */
+}
+
+.toolbar-items button {
+margin-bottom: 10px;
+padding: 0; /* Remove padding to control height precisely */
+width: 100%; /* Make buttons take the full width of the sidebar */
+height: 40px; /* Set a fixed height for the buttons */
+font-size: 0.9rem; /* Slightly smaller font size */
+font-family: 'Montserrat', sans-serif; /* Ensure font is Montserrat */
+text-align: center;
+color: white;
+background-color: #0a3732; /* Button background color */
+border: none;
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s ease;
+}
+
+.toolbar-items button:hover {
+background-color: #90ee90; /* Change color on hover */
+}
+
+/* Style for links inside buttons */
+.toolbar-items button a {
+color: inherit; /* Make link color inherit from button */
+text-decoration: none; /* Remove underline */
+display: inline-block;
+width: 100%;
+height: 100%;
+line-height: 40px; /* Center link text vertically */
+}
+.profile-image {
+  width: 50px; /* Adjust size as needed */
+  height: 50px;
+  border-radius: 50%; /* Make it circular */
+  margin-right: 10px; /* Space between image and icon */
+}
+
+.line {
+  width: 100%; /* Full width of the container */
+  height: 2px; /* Thickness of the line */
+  background-color: rgba(255, 255, 255, 0.192); /* Color of the line */
+  margin: 10px 0; /* Spacing above and below the line */
+}

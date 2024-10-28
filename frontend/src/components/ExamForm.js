@@ -1,10 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import './examForm.css'; // Import the CSS file
 
 const ExamForm = () => {
   const [examType, setExamType] = useState('');
   const [examinerType, setExaminerType] = useState('');
   const [examDate, setExamDate] = useState('');
+  const examFormRef = useRef();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in');
+          observer.unobserve(entry.target);
+        }
+      });
+    });
+
+    if (examFormRef.current) {
+      observer.observe(examFormRef.current);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -12,7 +29,7 @@ const ExamForm = () => {
       const response = await axios.post('/api/exam', {
         examType,
         examinerType,
-        date: examDate
+        date: examDate,
       });
       console.log(response.data);
       alert('Exam created successfully!');
@@ -23,8 +40,16 @@ const ExamForm = () => {
   };
 
   return (
-    <div>
-      <h2>Exam Form</h2>
+    <div className="exam-form-container" ref={examFormRef}>
+      <h1 style={{ textAlign: 'center' }}>
+          <b>
+            <span className="bill">Bill</span>
+            <span className="eval">Eval</span>
+          </b>
+          </h1>
+          <hr style={{ border: 'none', height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.192)', margin: '10px 0' }} />
+
+      <h3>Create Exam</h3>
       <form onSubmit={handleSubmit}>
         <label>
           Select Exam Type:
@@ -49,7 +74,7 @@ const ExamForm = () => {
           <input type="date" value={examDate} onChange={(e) => setExamDate(e.target.value)} />
         </label>
 
-        <button type="submit">Create Exam</button>
+        <button type="submit" className="create-exam-btn">Create Exam</button>
       </form>
     </div>
   );
