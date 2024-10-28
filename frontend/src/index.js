@@ -6,6 +6,8 @@ import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import ExamForm from './components/ExamForm';
 import Billing from './components/Billing';
+import Profile from './components/profile';
+import Faculty from './components/Faculty';
 import './App.css';
 
 ReactDOM.render(
@@ -17,6 +19,8 @@ ReactDOM.render(
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/exam-form" component={ExamForm} />
         <Route path="/billing" component={Billing} />
+        <Route path="/profile" component={Profile} />
+        <Route path="/faculty" component={Faculty} />
       </Switch>
     </Router>
   </React.StrictMode>,

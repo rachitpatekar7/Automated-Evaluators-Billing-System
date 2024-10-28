@@ -4,6 +4,14 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 
+// ... other imports
+
+
+
+
+// Inside your Router component
+
+
 function App() {
   return (
     <Router>
@@ -11,6 +19,7 @@ function App() {
         <Route path="/" exact component={Login} />
         <Route path="/register" component={Register} />
         <Route path="/dashboard" component={Dashboard} />
+        
       </Switch>
     </Router>
   );
