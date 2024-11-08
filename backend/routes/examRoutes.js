@@ -9,4 +9,10 @@ router.post('/create', createExam);
 // Route to get all exam records for a user
 router.get('/user/:userId', getExams);
 
+//Route to edit the exam
+router.put('/edit/:id', authMiddleware, updateExam);
+
+//Route to mark exam conducted
+router.post('/mark-conducted/:id', authMiddleware, markExamConducted);
+
 module.exports = router;
