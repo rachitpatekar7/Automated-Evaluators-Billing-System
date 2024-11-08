@@ -28,3 +28,33 @@ exports.getExams = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+//update exam records
+exports.updateExam = async (req, res) => {
+  const { id } = req.params;
+  const { examType, examiner, date } = req.body;
+  const exam = await Exam.findById(id);
+
+  if (exam.status === 'conducted') {
+    return res.status(403).json({ message: 'Cannot edit a conducted exam' });
+  }
+  
+  exam.examType = examType;
+  exam.examiner = examiner;
+  exam.date = date;
+  await exam.save();
+  res.json({ message: 'Exam updated successfully' });
+};
+
+//mark exam conducted
+exports.markExamConducted = async (req, res) => {
+  const { id } = req.params;
+  const exam = await Exam.findById(id);
+
+  if (!exam) return res.status(404).json({ message: 'Exam not found' });
+
+  exam.status = 'conducted';
+  await exam.save();
+  res.json({ message: 'Exam marked as conducted' });
+};
+
