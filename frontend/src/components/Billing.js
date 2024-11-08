@@ -11,7 +11,7 @@ const Billing = () => {
 
   const handleGenerateReceipt = async () => {
     try {
-      await axios.post('/api/billing/generate', { examType, examiner, hoursWorked, amount });
+      await axios.post('http://localhost:5000/api/billing/generate', { examType, examiner, hoursWorked, amount });
       alert('Billing receipt generated successfully');
     } catch (error) {
       console.error("Receipt generation failed");

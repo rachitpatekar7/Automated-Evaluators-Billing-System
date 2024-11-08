@@ -26,7 +26,7 @@ const ExamForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/exam', {
+      const response = await axios.post('http://localhost:5000/api/exam/create', {
         examType,
         examinerType,
         date: examDate,
