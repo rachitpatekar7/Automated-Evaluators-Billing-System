@@ -4,14 +4,25 @@ import './examForm.css'; // Reference the CSS file
 
 const Billing = () => {
   const [examType, setExamType] = useState('');
+  const [examID, setExamID] = useState('');
   const [examiner, setExaminer] = useState('');
   const [hoursWorked, setHoursWorked] = useState('');
   const [amount, setAmount] = useState('');
-  const [fadeIn, setFadeIn] = useState(false); // State for fade effect
+  const [fadeIn, setFadeIn] = useState(false); 
+  const ratePerHour = 200;
+
+   // Automatically calculate amount when hoursWorked changes
+  useEffect(() => {
+    if (hoursWorked) {
+      setAmount(hoursWorked * ratePerHour);
+    } else {
+      setAmount(''); // Clear amount if hoursWorked is empty
+    }
+  }, [hoursWorked]);
 
   const handleGenerateReceipt = async () => {
     try {
-      await axios.post('http://localhost:5000/api/billing/generate', { examType, examiner, hoursWorked, amount });
+      await axios.post('http://localhost:5000/api/billing/generate', { examID, examType, examiner, hoursWorked, amount });
       alert('Billing receipt generated successfully');
     } catch (error) {
       console.error("Receipt generation failed");
@@ -36,6 +47,7 @@ const Billing = () => {
       </h1>
       <h2 style={{ color: 'white' }}>Billing</h2>
       <form>
+        <input type="number" placeholder="Exam ID" value={examID} onChange={(e) => setExamID(e.target.value)} required/>
         <select value={examType} onChange={(e) => setExamType(e.target.value)}>
           <option value="">Select Exam Type</option>
           <option value="viva">Viva</option>

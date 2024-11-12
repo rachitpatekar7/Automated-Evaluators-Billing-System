@@ -3,9 +3,11 @@ import axios from 'axios';
 import './examForm.css'; // Import the CSS file
 
 const ExamForm = () => {
+  const [examID, setExamID] = useState('');
   const [examType, setExamType] = useState('');
   const [examinerType, setExaminerType] = useState('');
   const [examDate, setExamDate] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); 
   const examFormRef = useRef();
 
   useEffect(() => {
@@ -27,15 +29,17 @@ const ExamForm = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/api/exam/create', {
+        examID, 
         examType,
-        examinerType,
-        date: examDate,
+        examiner: examinerType,
+        date: examDate, 
       });
       console.log(response.data);
       alert('Exam created successfully!');
+      setErrorMessage(''); 
     } catch (error) {
       console.error('Error creating exam', error);
-      alert('Failed to create exam');
+      setErrorMessage(error.response?.data?.message || 'Failed to create exam'); 
     }
   };
 
@@ -50,10 +54,21 @@ const ExamForm = () => {
           <hr style={{ border: 'none', height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.192)', margin: '10px 0' }} />
 
       <h3>Create Exam</h3>
+      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>} {/* Display error message if any */}
       <form onSubmit={handleSubmit}>
+      <label>
+          Exam ID (must be unique):
+          <input
+            type="text"
+            placeholder="Enter a unique Exam ID"
+            value={examID}
+            onChange={(e) => setExamID(e.target.value)}
+            required/>
+        </label>
+
         <label>
           Select Exam Type:
-          <select value={examType} onChange={(e) => setExamType(e.target.value)}>
+          <select value={examType} onChange={(e) => setExamType(e.target.value)} required>
             <option value="">Select</option>
             <option value="viva">Viva</option>
             <option value="practical">Practical</option>
@@ -62,7 +77,7 @@ const ExamForm = () => {
 
         <label>
           Select Examiner Type:
-          <select value={examinerType} onChange={(e) => setExaminerType(e.target.value)}>
+          <select value={examinerType} onChange={(e) => setExaminerType(e.target.value)} required>
             <option value="">Select</option>
             <option value="internal">Internal</option>
             <option value="external">External</option>
@@ -71,7 +86,7 @@ const ExamForm = () => {
 
         <label>
           Select Exam Date:
-          <input type="date" value={examDate} onChange={(e) => setExamDate(e.target.value)} />
+          <input type="date" value={examDate} onChange={(e) => setExamDate(e.target.value)} required />
         </label>
 
         <button type="submit" className="create-exam-btn">Create Exam</button>

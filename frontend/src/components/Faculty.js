@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './examForm.css'; // Import existing CSS file
 
 const Faculty = () => {
+  const [facultyList, setFacultyList] = useState([]);
+
+  useEffect(() => {
+    const fetchFaculty = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:5000/api/auth/faculty',{
+          headers: { Authorization: `Bearer ${token}`}
+        });
+        setFacultyList(response.data);
+      } catch (error) {
+        console.error('Error fetching faculty information:', error);
+      }
+    };
+    fetchFaculty();
+  }, []);
   return (
     <div className="exam-form-container" style={{ opacity: 1, transform: 'none', marginTop: '300px',marginBottom: '100px' }}> {/* Add top margin */}
       <h1 style={{ textAlign: 'center' }}>
@@ -19,24 +36,20 @@ const Faculty = () => {
           borderRadius: '5px',
           color: '#0a3732',
       }}>
-        <p style={{ marginBottom: '10px' }}><strong>Subject:</strong> Full Stack Development (FSD)</p>
-        <p style={{ marginBottom: '10px' }}><strong>Faculty:</strong> Dr. A. Sharma</p>
-        <p style={{ marginBottom: '10px' }}><strong>Qualification:</strong> Ph.D. in Computer Science</p>
-        <hr style={{ margin: '10px 0' }} />
-
-        <p style={{ marginBottom: '10px' }}><strong>Subject:</strong> Artificial Intelligence and Machine Learning (AIML)</p>
-        <p style={{ marginBottom: '10px' }}><strong>Faculty:</strong> Prof. R. Gupta</p>
-        <p style={{ marginBottom: '10px' }}><strong>Qualification:</strong> M.Tech in AIML</p>
-        <hr style={{ margin: '10px 0' }} />
-
-        <p style={{ marginBottom: '10px' }}><strong>Subject:</strong> Data-Driven Computer Architecture (DDCA)</p>
-        <p style={{ marginBottom: '10px' }}><strong>Faculty:</strong> Dr. M. Nair</p>
-        <p style={{ marginBottom: '10px' }}><strong>Qualification:</strong> Ph.D. in Computer Engineering</p>
-        <hr style={{ margin: '10px 0' }} />
-
-        <p style={{ marginBottom: '10px' }}><strong>Subject:</strong> Cyber Security and Forensics</p>
-        <p style={{ marginBottom: '10px' }}><strong>Faculty:</strong> Prof. S. Mehta</p>
-        <p style={{ marginBottom: '10px' }}><strong>Qualification:</strong> M.Sc. in Cyber Security</p>
+      {/* Display the faculty list */}
+      {facultyList.length > 0 ? (
+          facultyList.map((faculty, index) => (
+            <div key={index} style={{ marginBottom: '10px' }}>
+              <p><strong>Name:</strong> {faculty.name}</p>
+              <p><strong>Email:</strong> {faculty.email}</p>
+              <p><strong>Subject:</strong> {faculty.subject}</p>
+              <p><strong>Qualification:</strong> {faculty.qualification}</p>
+              <hr />
+            </div>
+          ))
+        ) : (
+          <p>No faculty information available.</p>
+        )}
       </div>
     </div>
   );

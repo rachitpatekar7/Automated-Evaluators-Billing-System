@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import axios from 'axios';
 import './Dashboard.css';
 
 
@@ -7,9 +8,26 @@ const Dashboard = ({ user }) => {
   const history = useHistory();
   const [isVisible, setIsVisible] = useState(false);
   const [sectionsVisible, setSectionsVisible] = useState(false);
+  const [userName, setUserName] = useState('');
   const cardsRef = useRef(null);
   const sectionsRef = useRef([]);
 
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:5000/api/auth/profile', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUserName(response.data.name); // Set the user name
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+  
   const goToProfile = () => {
     history.push('/profile');
   };
@@ -24,6 +42,10 @@ const Dashboard = ({ user }) => {
 
   const handleBillingClick = () => {
     history.push('/billing');
+  };
+
+  const goToExamsList = () => {
+    history.push('/exams'); 
   };
 
   const handleScroll = (entries) => {
@@ -72,7 +94,7 @@ const Dashboard = ({ user }) => {
           
           <p>
             <h5 style={{ textAlign: 'center', color: 'white' }}>
-              View your Profile, {user?.name || "UserName"}!
+              View your Profile, { userName || "UserName"}!
             </h5>
           </p>
           
@@ -82,6 +104,7 @@ const Dashboard = ({ user }) => {
           <button onClick={knowOurFaculty}>Know our Faculty</button>
           <button onClick={handleExamFormClick}>Exam Form</button>
           <button onClick={handleBillingClick}>Billing Section</button>
+          <button onClick={goToExamsList}>View All Exams</button>
         </div>
       </aside>
 
@@ -89,25 +112,6 @@ const Dashboard = ({ user }) => {
         <br></br>
         <br></br>
         <br></br>
-        
-        <h2 className="dashboard-header">Hello, {user?.name || "UserName"}!</h2>
-        <p>Your current billing summary and activity.</p>
-
-        {/* Summary Cards */}
-        <div className={`cards ${isVisible ? 'fade-in' : ''}`} ref={cardsRef}>
-          <div className="card">
-            <h4>Today's <span style={{ color: '#37e637' }}>Revenue</span></h4>
-            <p><span style={{ color: 'black' }}>+10% compared to yesterday</span></p>
-          </div>
-          <div className="card">
-            <h4>Today's <span style={{ color: '#ff3a3e' }}>Expenses</span></h4>
-            <p><span style={{ color: 'black' }}>-10% compared to yesterday</span></p>
-          </div>
-          <div className="card">
-            <h4>No. Of <span style={{ color: 'orange' }}>Bills Extracted</span></h4>
-            <p><span style={{ color: 'black' }}>2 New</span></p>
-          </div>
-        </div>
 
         {/* Containers for Exam and Billing Sections */}
         <div className={`section-container ${sectionsVisible ? 'fade-in' : ''}`}>
