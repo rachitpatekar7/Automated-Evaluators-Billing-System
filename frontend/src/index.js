@@ -8,6 +8,7 @@ import ExamForm from './components/ExamForm';
 import Billing from './components/Billing';
 import Profile from './components/profile';
 import Faculty from './components/Faculty';
+import ExamList from './components/ExamList';
 import './App.css';
 
 ReactDOM.render(
@@ -21,6 +22,7 @@ ReactDOM.render(
         <Route path="/billing" component={Billing} />
         <Route path="/profile" component={Profile} />
         <Route path="/faculty" component={Faculty} />
+        <Route path="/exams" component={ExamList} />
       </Switch>
     </Router>
   </React.StrictMode>,
