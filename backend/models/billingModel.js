@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const billingSchema = new mongoose.Schema({
-  userId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true 
-  },
   examID: { 
     type: String, 
     required: true 

@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  userID: {
-    type: String,
-    default: uuidv4,
-    unique: true
-  },
   name: {
     type: String,
     required: true
@@ -25,7 +20,8 @@ const userSchema = new mongoose.Schema({
   },
   qualification: { 
     type: String, 
-    required: true }
+    required: true 
+  }
 });
 
 module.exports = mongoose.model('User', userSchema);
