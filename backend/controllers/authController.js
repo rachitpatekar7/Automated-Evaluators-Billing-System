@@ -2,11 +2,11 @@ const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-
+console.log(process.env.JWT_SECRET);
 
 // Register User
 exports.register = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, subject, qualification } = req.body;
 
   try {
     // Check if all fields are present
@@ -46,12 +46,10 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1h'
-    });
-
-    res.status(200).json({ result: user, token });
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(200).json({ token });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -59,7 +57,7 @@ exports.login = async (req, res) => {
 //fetch user details
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select('name subject qualification');
+    const users = await User.find().select('name email subject qualification');
     res.json(users);
   } catch (error) {
       res.status(500).json({ message: 'Error fetching profile' });
@@ -69,10 +67,30 @@ exports.getAllUsers = async (req, res) => {
 //edit user profile
 exports.updateProfile = async (req, res) => {
   const { name, subject, qualification } = req.body;
-  const user = await User.findById(req.user.id);
-  user.name = name;
-  user.subject = subject;
-  user.qualification = qualification;
-  await user.save();
-  res.json({ message: 'Profile updated successfully' });
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.name = name;
+    user.subject = subject;
+    user.qualification = qualification;
+    await user.save();
+
+    res.json(user); // Send updated user back to the frontend
+  } catch (error) {
+    res.status(500).json({ message: "Error updating profile" });
+  }
+};
+
+//Fetch user profile
+exports.getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('name'); // Exclude password
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching profile' });
+  }
 };

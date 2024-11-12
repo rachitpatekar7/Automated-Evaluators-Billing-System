@@ -5,14 +5,20 @@ const fs = require('fs');
 const path = require('path');
 
 exports.generateBillingReceipt = async (req, res) => {
-  const { userId, examID, examType, examiner, hoursWorked } = req.body;
-  const ratePerHour = 50; // Define a standard rate per hour
+  const { examID, examType, examiner, hoursWorked } = req.body;
+  const ratePerHour = 200; // Define a standard rate per hour
   const amount = hoursWorked * ratePerHour;
 
+  if ( !examID || !examType || !examiner || !hoursWorked) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+  
   try {
     // Create a new billing record
-    const newBilling = new Billing({ userId, examID, examType, examiner, hoursWorked, amount });
+    const newBilling = new Billing({ examID, examType, examiner, hoursWorked, amount });
     await newBilling.save();
+    console.log("Billing record saved successfully.");
+
 
     // Generate PDF
     const doc = new PDFDocument();

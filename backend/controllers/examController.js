@@ -2,27 +2,36 @@ const Exam = require('../models/examModel');
 
 // Create Exam Record
 exports.createExam = async (req, res) => {
-  const { userId, examType, examiner, date } = req.body;
+  const { examID, examType, examiner, date } = req.body;
 
   try {
-    const newExam = new Exam({
-      userId,
-      examType,
-      examiner,
-      date
-    });
+    // Check if all fields are provided
+    if (!examID || !examType || !examiner || !date) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
+    // Check for unique examID
+    const existingExam = await Exam.findOne({ examID });
+    if (existingExam) {
+      return res.status(400).json({ message: "Exam ID already exists. Please use a different ID." });
+    }
+
+    // Create new exam
+    const newExam = new Exam({ examID, examType, examiner, date });
     await newExam.save();
-    res.status(201).json({ message: "Exam created successfully" });
+
+    res.status(201).json({ message: "Exam created successfully", newExam });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.error('Error creating exam:', error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 // Get Exam Records
 exports.getExams = async (req, res) => {
+  //const { userId } = req.params;
   try {
-    const exams = await Exam.find({ userId: req.user.id });
+    const exams = await Exam.find();
     res.status(200).json(exams);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
@@ -34,27 +43,11 @@ exports.updateExam = async (req, res) => {
   const { id } = req.params;
   const { examType, examiner, date } = req.body;
   const exam = await Exam.findById(id);
-
-  if (exam.status === 'conducted') {
-    return res.status(403).json({ message: 'Cannot edit a conducted exam' });
-  }
   
   exam.examType = examType;
   exam.examiner = examiner;
   exam.date = date;
   await exam.save();
   res.json({ message: 'Exam updated successfully' });
-};
-
-//mark exam conducted
-exports.markExamConducted = async (req, res) => {
-  const { id } = req.params;
-  const exam = await Exam.findById(id);
-
-  if (!exam) return res.status(404).json({ message: 'Exam not found' });
-
-  exam.status = 'conducted';
-  await exam.save();
-  res.json({ message: 'Exam marked as conducted' });
 };
 
