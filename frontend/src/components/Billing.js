@@ -38,40 +38,40 @@ const Billing = () => {
   }, [hoursWorked]);
 
   const handleGenerateReceipt = async () => {
-    try {
-      const token = localStorage.getItem('token'); // Retrieve token from local storage
-  
-      // Make the request to generate the receipt and set responseType to 'blob' to handle binary data
-      const response = await axios.post(
-        'http://localhost:5000/api/billing/generate',
-        { examID, examType, examiner, hoursWorked, amount },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          responseType: 'blob', // This is important to handle PDF data
-        }
-      );
-  
-      // Create a URL for the PDF blob and trigger download
-      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-  
-      // Create a temporary link element and click it to trigger the download
-      const link = document.createElement('a');
-      link.href = pdfUrl;
-      link.setAttribute('download', `BillingReceipt-${examID}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-  
-      // Clean up the URL object and remove the temporary link
-      URL.revokeObjectURL(pdfUrl);
-      link.remove();
-  
-      alert('Billing receipt generated and downloaded successfully');
-    } catch (error) {
-      console.error("Receipt generation failed:", error);
-    }
-  };
-  
+  try {
+    const token = localStorage.getItem('token'); // Retrieve token from local storage
+
+    // Make the request to generate the receipt and set responseType to 'blob' to handle binary data
+    const response = await axios.post(
+      'http://localhost:5000/api/billing/generate',
+      { examID, examType, examiner, hoursWorked, amount },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob', // This is important to handle PDF data
+      }
+    );
+
+    // Create a URL for the PDF blob and trigger download
+    const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+
+    // Create a temporary link element and click it to trigger the download
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.setAttribute('download', `BillingReceipt-${examID}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up the URL object and remove the temporary link
+    URL.revokeObjectURL(pdfUrl);
+    link.remove();
+
+    alert('Billing receipt generated and downloaded successfully');
+  } catch (error) {
+    console.error("Receipt generation failed:", error);
+  }
+};
+
 
   // Effect to trigger fade-in after component mounts
   useEffect(() => {
