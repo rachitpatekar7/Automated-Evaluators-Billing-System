@@ -1,73 +1,87 @@
 const nodemailer = require('nodemailer');
-const PDFDocument = require('pdfkit');
+const { jsPDF } = require('jspdf');
 const Billing = require('../models/billingModel');
-const fs = require('fs');
-const path = require('path');
+const Exam = require('../models/examModel');
 
 exports.generateBillingReceipt = async (req, res) => {
-  const { examID, examType, examiner, hoursWorked } = req.body;
-  const ratePerHour = 200; // Define a standard rate per hour
-  const amount = hoursWorked * ratePerHour;
+  console.log('User in generateBillingReceipt:', req.user); 
+  const { examID, hoursWorked } = req.body;
+  const ratePerHour = 200;
 
-  if ( !examID || !examType || !examiner || !hoursWorked) {
+  if (!examID || !hoursWorked) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
-  
+
   try {
-    // Create a new billing record
-    const newBilling = new Billing({ examID, examType, examiner, hoursWorked, amount });
-    await newBilling.save();
+    const exam = await Exam.findOne({ examID }); // Fetch exam details
+    if (!exam) {
+      return res.status(404).json({ message: 'Exam not found' });
+    }
+
+    const amount = hoursWorked * ratePerHour;
+
+    const newBilling = new Billing({
+      examID,
+      examType: exam.examType,
+      examiner: exam.examiner,
+      hoursWorked,
+      amount
+    });
     console.log("Billing record saved successfully.");
 
+    // Generate PDF using jsPDF
+    const doc = new jsPDF();
 
-    // Generate PDF
-    const doc = new PDFDocument();
-    const pdfBuffer = [];
+    doc.setFontSize(25);
+    doc.text('Billing Receipt', 105, 20, { align: 'center' });
+    doc.setFontSize(16);
+    doc.text(`Exam ID: ${examID}`, 10, 40);
+    doc.text(`Exam Type: ${exam.examType}`, 10, 50);
+    doc.text(`Examiner: ${exam.examiner}`, 10, 60);
+    doc.text(`Hours Worked: ${hoursWorked}`, 10, 70);
+    doc.text(`Amount: $${amount}`, 10, 80);
 
-    // Collect PDF data as it streams
-    doc.on('data', (chunk) => pdfBuffer.push(chunk));
-    doc.on('end', async () => {
-      const pdfData = Buffer.concat(pdfBuffer);
-      
-      // Save PDF data to the billing record
-      newBilling.pdfData = pdfData;
-      await newBilling.save();
+    // Save PDF data as a buffer
+    const pdfData = Buffer.from(doc.output('arraybuffer'));
 
-      // Email the PDF as an attachment
-      const transporter = nodemailer.createTransport({
-        service: 'Gmail',
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
+    // Update the billing record with the PDF data
+    newBilling.pdfData = Buffer.from(pdfData);
+    await newBilling.save();
 
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: req.user.email,
-        subject: 'Billing Receipt',
-        text: 'Here is your billing receipt.',
-        attachments: [{ filename: 'BillingReceipt.pdf', content: pdfData }],
-      });
-
-      // Send the PDF to the client for auto-download
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename=BillingReceipt-${examID}.pdf`);
-      res.send(pdfData);
+    /* Email the PDF as an attachment
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
     });
 
-    // Populate PDF content
-    doc.fontSize(25).text('Billing Receipt', { align: 'center' });
-    doc.moveDown();
-    doc.fontSize(16).text(`Exam ID: ${examID}`);
-    doc.text(`Exam Type: ${examType}`);
-    doc.text(`Examiner: ${examiner}`);
-    doc.text(`Hours Worked: ${hoursWorked}`);
-    doc.text(`Amount: $${amount}`);
-    doc.end();
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: req.user.email,
+      subject: 'Billing Receipt',
+      text: 'Here is your billing receipt.',
+      attachments: [{ filename: 'BillingReceipt.pdf', content: pdfData }],
+    });*/
+
+    // Send the PDF to the client for download
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=BillingReceipt-${examID}.pdf`);
+    res.send(pdfData);
 
   } catch (error) {
     console.error('Error generating receipt:', error);
     res.status(500).json({ message: 'Error generating receipt' });
+  }
+};
+
+exports.getAllExams = async (req, res) => {
+  try {
+    const exams = await Exam.find({}, 'examID examType examiner'); // Fetch all exams with specific fields
+    res.status(200).json(exams);
+  } catch (error) {
+    console.error("Error fetching exams:", error);
+    res.status(500).json({ message: "Failed to fetch exams" });
   }
 };

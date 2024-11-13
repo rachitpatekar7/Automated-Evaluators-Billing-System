@@ -51,3 +51,13 @@ exports.updateExam = async (req, res) => {
   res.json({ message: 'Exam updated successfully' });
 };
 
+//fetch exam for billing  
+exports.getAllExams = async (req, res) => {
+  try {
+    const exams = await Exam.find({}, 'examID examType examiner'); // Fetch necessary fields
+    res.status(200).json(exams);
+  } catch (error) {
+    console.error("Error fetching exams:", error);
+    res.status(500).json({ message: "Failed to fetch exams" });
+  }
+};
