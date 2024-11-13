@@ -35,8 +35,7 @@ This project is a web-based system designed to streamline the billing and paymen
 - **Mongoose**: ODM library for MongoDB.
 - **JWT**: JSON Web Tokens for secure user authentication.
 - **Bcrypt.js**: Password hashing for security.
-- **PDFKit**: Generates PDFs for billing receipts.
-- **Nodemailer**: Sends email receipts.
+- **jsPDF**: Generates PDFs for billing receipts.
 
 ### Development Tools
 - **Git**: Version control and collaboration.
@@ -48,7 +47,6 @@ The application uses a client-server model:
 1. **Frontend (React)**: Handles user interface, including login, exam management, and billing generation.
 2. **Backend (Node.js/Express)**: Manages authentication, database operations, and billing logic.
 3. **Database (MongoDB Atlas)**: Stores data related to users, exams, and billing.
-4. **Email Service**: Nodemailer for sending billing receipts.
 
 The frontend communicates with the backend through RESTful API calls, and the backend connects to MongoDB Atlas for data storage. User actions on the frontend trigger backend API routes, which perform database operations and return results to the frontend.
 
@@ -85,12 +83,11 @@ This project was developed using an Agile approach with iterative cycles of deve
 1. Register or log in as a user.
 2. Create and manage exam entries.
 3. Generate billing receipts and download them as PDFs.
-4. Access email receipts for billing records.
 
 ## Results and Discussion
 The system successfully meets its objectives by providing secure and efficient exam and billing management. Key accomplishments include:
 - **Secure Billing**: Each transaction is verified, ensuring transparency.
-- **Improved Efficiency**: Automatic PDF generation and email delivery streamline the billing process.
+- **Improved Efficiency**: Automatic PDF generation streamline the billing process.
 - **Scalable Architecture**: The use of MongoDB Atlas allows for future data scaling needs.
 
 However, challenges encountered included API response time, which was optimized by implementing caching strategies and reducing payload sizes in API responses.
