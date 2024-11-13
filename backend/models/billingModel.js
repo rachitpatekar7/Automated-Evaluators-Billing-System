@@ -23,7 +23,7 @@ const billingSchema = new mongoose.Schema({
   },
   pdfData: { 
     type: Buffer 
-  } // Field to store PDF data
+  }
 });
 
 module.exports = mongoose.model('Billing', billingSchema);
