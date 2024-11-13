@@ -1,10 +1,8 @@
-const nodemailer = require('nodemailer');
 const { jsPDF } = require('jspdf');
 const Billing = require('../models/billingModel');
 const Exam = require('../models/examModel');
 
 exports.generateBillingReceipt = async (req, res) => {
-  console.log('User in generateBillingReceipt:', req.user); 
   const { examID, hoursWorked } = req.body;
   const ratePerHour = 200;
 
@@ -13,7 +11,7 @@ exports.generateBillingReceipt = async (req, res) => {
   }
 
   try {
-    const exam = await Exam.findOne({ examID }); // Fetch exam details
+    const exam = await Exam.findOne({ examID });
     if (!exam) {
       return res.status(404).json({ message: 'Exam not found' });
     }
@@ -32,38 +30,38 @@ exports.generateBillingReceipt = async (req, res) => {
     // Generate PDF using jsPDF
     const doc = new jsPDF();
 
-    doc.setFontSize(25);
-    doc.text('Billing Receipt', 105, 20, { align: 'center' });
-    doc.setFontSize(16);
-    doc.text(`Exam ID: ${examID}`, 10, 40);
-    doc.text(`Exam Type: ${exam.examType}`, 10, 50);
-    doc.text(`Examiner: ${exam.examiner}`, 10, 60);
-    doc.text(`Hours Worked: ${hoursWorked}`, 10, 70);
-    doc.text(`Amount: $${amount}`, 10, 80);
+    // Set up custom font and color for "BillEval" heading
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(24);
+    doc.setTextColor(34, 85, 122); // Teal color for the heading
+    doc.text('BillEval', 105, 20, { align: 'center' });
+
+    // Draw a line below the heading
+    doc.setDrawColor(34, 85, 122); // Same color as heading
+    doc.setLineWidth(1);
+    doc.line(20, 25, 190, 25); // Line below the heading
+
+    // Content styling
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0); // Reset text color to black
+    doc.setFontSize(14);
+
+    // Content layout
+    const contentStartY = 40;
+    const lineSpacing = 10;
+
+    doc.text(`Exam ID: ${examID}`, 20, contentStartY);
+    doc.text(`Exam Type: ${exam.examType}`, 20, contentStartY + lineSpacing);
+    doc.text(`Examiner: ${exam.examiner}`, 20, contentStartY + lineSpacing * 2);
+    doc.text(`Hours Worked: ${hoursWorked}`, 20, contentStartY + lineSpacing * 3);
+    doc.text(`Amount: $${amount}`, 20, contentStartY + lineSpacing * 4);
 
     // Save PDF data as a buffer
     const pdfData = Buffer.from(doc.output('arraybuffer'));
 
     // Update the billing record with the PDF data
-    newBilling.pdfData = Buffer.from(pdfData);
+    newBilling.pdfData = pdfData;
     await newBilling.save();
-
-    /* Email the PDF as an attachment
-    const transporter = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: req.user.email,
-      subject: 'Billing Receipt',
-      text: 'Here is your billing receipt.',
-      attachments: [{ filename: 'BillingReceipt.pdf', content: pdfData }],
-    });*/
 
     // Send the PDF to the client for download
     res.setHeader('Content-Type', 'application/pdf');
@@ -78,7 +76,7 @@ exports.generateBillingReceipt = async (req, res) => {
 
 exports.getAllExams = async (req, res) => {
   try {
-    const exams = await Exam.find({}, 'examID examType examiner'); // Fetch all exams with specific fields
+    const exams = await Exam.find({}, 'examID examType examiner');
     res.status(200).json(exams);
   } catch (error) {
     console.error("Error fetching exams:", error);
