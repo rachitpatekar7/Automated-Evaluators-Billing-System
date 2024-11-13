@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './examForm.css';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -71,11 +72,22 @@ const Profile = () => {
   if (!profile) return <div>Loading...</div>;
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: 'auto' }}>
-      <h1>Profile</h1>
-      {message && <p style={{ color: 'green' }}>{message}</p>}
-      
-      <div style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '5px' }}>
+    <div className="exam-form-container" style={{ opacity: 1, transform: 'none', marginTop: '300px',marginBottom: '100px' }}> {/* Add top margin */}
+      <h1 style={{ textAlign: 'center' }}>
+        <b>
+          <span className="bill">Bill</span>
+          <span className="eval">Eval</span>
+        </b>
+      </h1>
+      <hr style={{ border: 'none', height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.192)', margin: '10px 0' }} />
+
+      <h3 style={{ fontSize: '1.5rem', marginBottom: '20px' }}>Profile</h3>
+      <div style={{
+          backgroundColor: '#f9f9f9',
+          padding: '15px',
+          borderRadius: '5px',
+          color: '#0a3732',
+      }}>
         {isEditing ? (
           <>
             <input

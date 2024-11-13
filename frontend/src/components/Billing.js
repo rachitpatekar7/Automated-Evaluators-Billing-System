@@ -9,7 +9,24 @@ const Billing = () => {
   const [hoursWorked, setHoursWorked] = useState('');
   const [amount, setAmount] = useState('');
   const [fadeIn, setFadeIn] = useState(false); 
+  const [exams, setExams] = useState([]);
   const ratePerHour = 200;
+
+  // Fetch exams when component mounts
+  useEffect(() => {
+    const fetchExams = async () => {
+      try {
+        const token = localStorage.getItem('token'); // Include token if needed
+        const response = await axios.get('http://localhost:5000/api/exam/all-exams', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setExams(response.data); // Populate exams state with response data
+      } catch (error) {
+        console.error("Error fetching exams:", error);
+      }
+    };
+    fetchExams();
+  }, []);
 
    // Automatically calculate amount when hoursWorked changes
   useEffect(() => {
@@ -22,19 +39,46 @@ const Billing = () => {
 
   const handleGenerateReceipt = async () => {
     try {
-      await axios.post('http://localhost:5000/api/billing/generate', { examID, examType, examiner, hoursWorked, amount });
-      alert('Billing receipt generated successfully');
+      const token = localStorage.getItem('token'); // Retrieve token from local storage
+  
+      // Make the request to generate the receipt and set responseType to 'blob' to handle binary data
+      const response = await axios.post(
+        'http://localhost:5000/api/billing/generate',
+        { examID, examType, examiner, hoursWorked, amount },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: 'blob', // This is important to handle PDF data
+        }
+      );
+  
+      // Create a URL for the PDF blob and trigger download
+      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+  
+      // Create a temporary link element and click it to trigger the download
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.setAttribute('download', `BillingReceipt-${examID}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+  
+      // Clean up the URL object and remove the temporary link
+      URL.revokeObjectURL(pdfUrl);
+      link.remove();
+  
+      alert('Billing receipt generated and downloaded successfully');
     } catch (error) {
-      console.error("Receipt generation failed");
+      console.error("Receipt generation failed:", error);
     }
   };
+  
 
   // Effect to trigger fade-in after component mounts
   useEffect(() => {
     setFadeIn(true);
   }, []);
 
-  return (
+   return (
     <div 
       className={`billing-container ${fadeIn ? 'fade-in' : ''}`} 
       style={{ fontFamily: 'Montserrat, sans-serif' }}
@@ -47,24 +91,46 @@ const Billing = () => {
       </h1>
       <h2 style={{ color: 'white' }}>Billing</h2>
       <form>
-        <input type="number" placeholder="Exam ID" value={examID} onChange={(e) => setExamID(e.target.value)} required/>
-        <select value={examType} onChange={(e) => setExamType(e.target.value)}>
-          <option value="">Select Exam Type</option>
-          <option value="viva">Viva</option>
-          <option value="practical">Practical Exam</option>
+        {/* Dropdown for Exam ID */}
+        <select
+          value={examID}
+          onChange={(e) => {
+            const selectedExam = exams.find(exam => exam.examID === e.target.value);
+            setExamID(e.target.value);
+            if (selectedExam) {
+              setExamType(selectedExam.examType); // Autofill examType
+              setExaminer(selectedExam.examiner); // Autofill examiner
+            }
+          }}
+          required
+        >
+          <option value="">Select Exam ID</option>
+          {exams.map((exam) => (
+            <option key={exam.examID} value={exam.examID}>
+              {exam.examID}
+            </option>
+          ))}
         </select>
-        <select value={examiner} onChange={(e) => setExaminer(e.target.value)}>
-          <option value="">Select Examiner</option>
-          <option value="internal">Internal</option>
-          <option value="external">External</option>
-        </select>
-        <input type="number" placeholder="Hours Worked" value={hoursWorked} onChange={(e) => setHoursWorked(e.target.value)} />
-        <input type="number" placeholder="Amount" value={amount} onChange={(e) => setAmount(e.target.value)} />
-        <br></br>
+
+        {/* Auto-filled Exam Type and Examiner */}
+        <input type="text" placeholder="Exam Type" value={examType} readOnly />
+        <input type="text" placeholder="Examiner" value={examiner} readOnly />
+
+        {/* Input for Hours Worked and calculated Amount */}
+        <input
+          type="number"
+          placeholder="Hours Worked"
+          value={hoursWorked}
+          onChange={(e) => setHoursWorked(e.target.value)}
+          required
+        />
+        <input type="number" placeholder="Amount" value={amount} readOnly />
+
+        <br />
         <button 
           type="button" 
           onClick={handleGenerateReceipt} 
-          style={{ backgroundColor: 'white', color: '#0a3732', border: '1px solid black', }}
+          style={{ backgroundColor: 'white', color: '#0a3732', border: '1px solid black' }}
         >
           <b>Generate Receipt</b>
         </button>

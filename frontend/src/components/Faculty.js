@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './examForm.css'; // Import existing CSS file
+import './examForm.css'; 
 
 const Faculty = () => {
   const [facultyList, setFacultyList] = useState([]);

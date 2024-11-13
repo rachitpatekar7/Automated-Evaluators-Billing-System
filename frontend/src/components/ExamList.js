@@ -55,51 +55,66 @@ const ExamsList = () => {
   };
 
   return (
-    <div className="exams-list-container">
-      <h1>All Exams</h1>
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-      {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
-      
-      {/* Display list of exams */}
-      <ul>
-        {exams.map((exam) => (
-          <li key={exam.examID} className="exam-item">
-            <p><strong>Exam ID:</strong> {exam.examID}</p>
-            <p><strong>Exam Type:</strong> {exam.examType}</p>
-            <p><strong>Examiner:</strong> {exam.examiner}</p>
-            <p><strong>Date:</strong> {new Date(exam.date).toLocaleDateString()}</p>
-            <button onClick={() => handleEditClick(exam)}>Edit</button>
-          </li>
-        ))}
-      </ul>
+    <div className="exam-form-container fade-in" style={{ marginTop: '300px', marginBottom: '100px' }}>
+      <h1 style={{ textAlign: 'center' }}>
+        <b>
+          <span className="bill">Bill</span>
+          <span className="eval">Eval</span>
+        </b>
+      </h1>
+      <hr style={{ border: 'none', height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.192)', margin: '10px 0' }} />
+      <h3 style={{ fontSize: '1.5rem', marginBottom: '20px' }}>Exams Information</h3>
+      <div style={{
+          backgroundColor: '#f9f9f9',
+          padding: '15px',
+          borderRadius: '5px',
+          color: '#0a3732',
+      }}>
+        <h1>All Exams</h1>
+        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+        {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+        
+        {/* Display list of exams */}
+        <ul>
+          {exams.map((exam) => (
+            <li key={exam.examID} className="exam-item">
+              <p><strong>Exam ID:</strong> {exam.examID}</p>
+              <p><strong>Exam Type:</strong> {exam.examType}</p>
+              <p><strong>Examiner:</strong> {exam.examiner}</p>
+              <p><strong>Date:</strong> {new Date(exam.date).toLocaleDateString()}</p>
+              <button className="create-exam-btn" onClick={() => handleEditClick(exam)}>Edit</button>
+            </li>
+          ))}
+        </ul>
 
-      {/* Edit form */}
-      {editExamID && (
-        <div className="edit-exam-form">
-          <h3>Edit Exam</h3>
-          <label>
-            Exam Type:
-            <select value={examType} onChange={(e) => setExamType(e.target.value)} required>
-              <option value="">Select</option>
-              <option value="viva">Viva</option>
-              <option value="practical">Practical</option>
-            </select>
-          </label>
-          <label>
-            Examiner Type:
-            <select value={examinerType} onChange={(e) => setExaminerType(e.target.value)} required>
-              <option value="">Select</option>
-              <option value="internal">Internal</option>
-              <option value="external">External</option>
-            </select>
-          </label>
-          <label>
-            Exam Date:
-            <input type="date" value={examDate} onChange={(e) => setExamDate(e.target.value)} required />
-          </label>
-          <button onClick={handleUpdateExam}>Update Exam</button>
-        </div>
-      )}
+        {/* Edit form */}
+        {editExamID && (
+          <div className="edit-exam-form">
+            <h3>Edit Exam</h3>
+            <label>
+              Exam Type:
+              <select value={examType} onChange={(e) => setExamType(e.target.value)} required>
+                <option value="">Select</option>
+                <option value="viva">Viva</option>
+                <option value="practical">Practical</option>
+              </select>
+            </label>
+            <label>
+              Examiner Type:
+              <select value={examinerType} onChange={(e) => setExaminerType(e.target.value)} required>
+                <option value="">Select</option>
+                <option value="internal">Internal</option>
+                <option value="external">External</option>
+              </select>
+            </label>
+            <label>
+              Exam Date:
+              <input type="date" value={examDate} onChange={(e) => setExamDate(e.target.value)} required />
+            </label>
+            <button className="create-exam-btn" onClick={handleUpdateExam}>Update Exam</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

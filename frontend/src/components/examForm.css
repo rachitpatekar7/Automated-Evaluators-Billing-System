@@ -21,6 +21,14 @@ html, body {
     transition: opacity 0.8s ease, transform 0.8s ease; /* Transition for fade effect */
 }
 
+.large-exam-container {
+    width: 120%; 
+    max-width: 1000px; 
+    height: 80vh;
+    padding: 400px;
+    margin: auto; 
+}
+
 .fade-in {
     opacity: 1; /* Fully visible */
     transform: translateY(0); /* Move to original position */
